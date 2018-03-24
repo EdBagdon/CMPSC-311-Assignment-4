@@ -1,0 +1,74 @@
+Writeup for Assignment #4 - CMPSC 311
+-----------------------------------------
+
+During today's lecture (December 2nd, 2016), Professor McDaniel outlined the steps necessary to complete Assignment #4 and provided pseudocode to perform these steps.  Note from this assignment.
+
+Steps to Completing Assignment #4
+-----------------------------------------
+
+(1) Get Assignment #3 working and test with the new workload. The correct way to run assignment 3 on the new workload is to copy the cart_sim executable from the assignment #3 directory into the assignment #4 directory and run it there.  For example:
+
+	% cd assign4
+	% cp ../assign3/cart_sim .
+	% ./cart_sim -v workload/cmpsc311-f16-assign4-workload.txt
+
+(2) Implement the code for the "cart_client_bus_request" function (see below).
+
+(3) In your existing driver code, replace every instance of the cart bus request (cart_io_bus) with the newly implemented "cart_client_bus_request" function.
+
+(4) Run the server in one terminal (Initially using '-v') and run the assignment #4 code in a separate terminal (Once again, initially using '-v').  Debug.
+
+
+Pseudocode for "cart_client_bus_request" function
+-----------------------------------------
+
+CartXferRegister cart_client_bus_request(CartXferRegister reg, void *buf) {
+    
+        // If there isn't an open connection already created
+        // Use a global variable 'socket_handle', set initially equal to '-1'.
+
+        // IF 'socket_handle' == -1, there is no open connection.
+        // ELSE, there is an open connection.
+
+        // IF there isn't an open connection already created, three things need to be done.
+        //    (a) Setup the address
+        //    (b) Create the socket
+        //    (c) Create the connection
+
+        if (! (open_connection)) {
+            a - setup address
+            b - socket()
+            c - connect()
+        }
+        
+        // Use the helper function you created in assignment #2 to extract the opcode from the provided register 'reg'
+        opcode = extract(reg)
+             
+        // There are four cases to consider when extracting this opcode.
+        
+        // CASE 1: RD operation
+        // SEND: (reg) <- Network format : send the register reg to the network after converting the register to 'network format'.
+        //
+        // RECEIVE: (reg) -> Host format
+        //          1024 frame (Data read from that frame)
+
+        // CASE 2: WR operation
+        // SEND: (reg) <- Network format : send the register reg to the network after converting the register to 'network format'.
+        //       buf 1024 (Data to write to that frame)
+        //
+        // RECEIVE: (reg) -> Host format
+
+        // CASE 3: SHUTDOWN operation
+        // SEND: (reg) <- Network format : send the register reg to the network after converting the register to 'network format'.
+        //
+        // RECEIVE: (reg) -> Host format
+        //
+        // Close the socket when finished (SHUTDOWN) : reset socket_handle to initial value of -1.
+        // close(socket_handle)
+
+        // CASE 4: Other operation
+        // SEND: (reg) <- Network format : send the register reg to the network after converting the register to 'network format'.
+        //
+        // RECEIVE: (reg) -> Host format
+
+}
